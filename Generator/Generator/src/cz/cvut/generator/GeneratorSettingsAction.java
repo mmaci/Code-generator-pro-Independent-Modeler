@@ -6,6 +6,7 @@ package cz.cvut.generator;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -34,8 +35,12 @@ public final class GeneratorSettingsAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-       // DialogDescriptor dd = new DialogDescriptor(ev, null).
-         NotifyDescriptor nd = new NotifyDescriptor.Message("Hello Context menu");
-         DialogDisplayer.getDefault().notify(nd);
+         // DialogDescriptor dd = new DialogDescriptor(new NewJPanel(), "Generator Settings");
+         // DialogDisplayer.getDefault().createDialog(dd);
+        // NotifyDescriptor nd = new NotifyDescriptor.Message("Hello Context menu");
+        // DialogDisplayer.getDefault().notify(nd);
+        
+        Object[] possibleValues = { "XML", "Postgre SQL", "SQL lite" };
+        Object language = JOptionPane.showInputDialog(null, "Generate: výběr jazyka", "Vyberte jazyk, do kterého chcete provést GENERATE:", JOptionPane.INFORMATION_MESSAGE, null, possibleValues, possibleValues[0]);
     }
 }
