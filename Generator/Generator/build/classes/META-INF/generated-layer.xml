@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN"
+                            "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="File">
+            <file name="cz-cvut-generator-GeneratorSettingsAction.instance">
+                <!--cz.cvut.generator.GeneratorSettingsAction-->
+                <attr
+                    bundlevalue="cz.cvut.generator.Bundle#CTL_GeneratorSettingsAction" name="displayName"/>
+                <attr methodvalue="org.openide.awt.Actions.context" name="instanceCreate"/>
+                <attr name="type" stringvalue="org.openide.loaders.DataObject"/>
+                <attr methodvalue="org.openide.awt.Actions.inject" name="delegate"/>
+                <attr name="injectable" stringvalue="cz.cvut.generator.GeneratorSettingsAction"/>
+                <attr name="selectionType" stringvalue="EXACTLY_ONE"/>
+                <attr boolvalue="false" name="noIconInMenu"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Loaders">
+        <folder name="text">
+            <folder name="IndepModClassNotation">
+                <folder name="Actions">
+                    <file name="cz-cvut-generator-GeneratorSettingsAction.shadow">
+                        <!--cz.cvut.generator.GeneratorSettingsAction-->
+                        <attr name="originalFile" stringvalue="Actions/File/cz-cvut-generator-GeneratorSettingsAction.instance"/>
+                        <attr intvalue="150" name="position"/>
+                    </file>
+                    <file name="cz-cvut-generator-GeneratorSettingsAction-separatorAfter.instance">
+                        <!--cz.cvut.generator.GeneratorSettingsAction-->
+                        <attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>
+                        <attr intvalue="175" name="position"/>
+                    </file>
+                    <file name="cz-cvut-generator-GeneratorSettingsAction-separatorBefore.instance">
+                        <!--cz.cvut.generator.GeneratorSettingsAction-->
+                        <attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>
+                        <attr intvalue="125" name="position"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>
