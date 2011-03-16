@@ -3,19 +3,10 @@
 <filesystem>
     <folder name="Actions">
         <folder name="Build">
-            <file name="gen-Generate.instance">
-                <attr name="delegate" newvalue="gen.Generate"/>
-                <attr name="displayName" bundlevalue="gen.Bundle#CTL_Generate"/>
+            <file name="gen-Generator.instance">
+                <attr name="delegate" newvalue="gen.Generator"/>
+                <attr name="displayName" bundlevalue="gen.Bundle#CTL_Generate2"/>
                 <attr name="iconBase" stringvalue="gen/ikona16.gif"/>
-                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="noIconInMenu" boolvalue="false"/>
-            </file>
-        </folder>
-        <folder name="File">
-            <file name="testModulX-testActionX.instance">
-                <attr name="delegate" newvalue="generator2.testActionX"/>
-                <attr name="displayName" bundlevalue="generator2.Bundle#CTL_testActionX"/>
-                <attr name="iconBase" stringvalue="generator2/ikona16.gif"/>
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="noIconInMenu" boolvalue="false"/>
             </file>
@@ -23,13 +14,9 @@
     </folder>
     <folder name="Toolbars">
         <folder name="File">
-            <file name="gen-Generate.shadow">
-                <attr name="originalFile" stringvalue="Actions/Build/gen-Generate.instance"/>
-                <attr name="position" intvalue="0"/>
-            </file>
-            <file name="generator2-testActionX.shadow">
-                <attr name="originalFile" stringvalue="Actions/File/generator2-testActionX.instance"/>
-                <attr name="position" intvalue="0"/>
+            <file name="gen-Generate2.shadow">
+                <attr name="originalFile" stringvalue="Actions/Build/gen-Generator.instance"/>
+                <attr name="position" intvalue="-200"/>
             </file>
         </folder>
     </folder>
