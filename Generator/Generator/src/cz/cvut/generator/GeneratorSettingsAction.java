@@ -35,12 +35,12 @@ public final class GeneratorSettingsAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-         // DialogDescriptor dd = new DialogDescriptor(new NewJPanel(), "Generator Settings");
-         // DialogDisplayer.getDefault().createDialog(dd);
+        //  DialogDescriptor dd = new DialogDescriptor(new NewJPanel(), "Generator Settings");
+       //   DialogDisplayer.getDefault().createDialog(dd);
         // NotifyDescriptor nd = new NotifyDescriptor.Message("Hello Context menu");
         // DialogDisplayer.getDefault().notify(nd);
         
-        Object[] possibleValues = { "XML", "Postgre SQL", "SQL lite" };
+        Object[] possibleValues = { "XML", "Postgre SQL", "SQLite" };
         Object language = JOptionPane.showInputDialog(null, "Generate: výběr jazyka", "Vyberte jazyk, do kterého chcete provést GENERATE:", JOptionPane.INFORMATION_MESSAGE, null, possibleValues, possibleValues[0]);
     }
 }
