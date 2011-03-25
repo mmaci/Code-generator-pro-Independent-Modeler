@@ -28,45 +28,12 @@ public class ClassModel extends TopComponent {
         this.setDisplayName(DISPLAY_NAME);
     }
 
-//    @Override
-//    public List<Mode> availableModes(List<Mode> modes) {
-//        for (Mode mode : modes) {
-//            if (!mode.getName().equals("rightSlidingSide")) {
-//                modes.remove(mode);
-//            }
-//        }
-//        return modes;
-//    }
-
-//    public IClassModelModel getModel() {
-//        return model;
-//    }
-//
-//    public void setModel(IClassModelModel model) {
-//        this.model = model;
-//    }
-
     public static synchronized ClassModel getDefault() {
         if (instance == null) {
             instance = new ClassModel();
         }
         return instance;
     }
-
-//    public static synchronized ClassModel findInstance() {
-//        TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
-//        if (win == null) {
-//            LOG.warning("Cannot find " + PREFERRED_ID + " component. It will not be located properly in the window system.");
-//            return getDefault();
-//        }
-//        if (win instanceof ClassModel) {
-//            return (ClassModel) win;
-//        }
-//        LOG.warning(
-//                "There seem to be multiple components with the '" + PREFERRED_ID
-//                + "' ID. That is a potential source of errors and unexpected behavior.");
-//        return getDefault();
-//    }
 
     @Override
     public void open() {

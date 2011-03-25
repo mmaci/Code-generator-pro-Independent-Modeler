@@ -7,7 +7,9 @@ package gen;
 import cz.cvut.indepmod.classmodel.api.model.IClassModelModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.logging.Logger;
+import org.openide.util.Exceptions;
 import org.openide.util.Utilities;
 
 public final class Generator implements ActionListener {
@@ -21,10 +23,13 @@ public final class Generator implements ActionListener {
             System.out.println("Nemate otevren class model");
         } else {
             //Zacni generovat
-            System.out.println("Otevreny class model ma: "+ classModel.getClasses().size() +" trid.");
-            // zde by asi byla funkce na predani modelu do nejakeho
-            // objektu genetatr
-            // napr:  Gener.generate(model);
+            System.out.println("Otevreny classs model ma: "+ classModel.getClasses().size() +" trid.");
+            Gen gen = new Gen(classModel);
+            try {
+                gen.generateModel();
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
             
         }
     }
