@@ -1,2 +1,2 @@
-public Class2 {
-}
+ public Class2 {
+	}

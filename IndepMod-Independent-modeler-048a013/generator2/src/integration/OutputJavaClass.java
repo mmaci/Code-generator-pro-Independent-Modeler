@@ -10,27 +10,32 @@ public class OutputJavaClass implements Closeable {
 
     private FileWriter w = null;
     private int numOfTabs = 0;
-    private boolean tabs= true;
+    private boolean tabs = true;
 
     public OutputJavaClass(String fileName) throws IOException {
         w = new FileWriter(fileName);
     }
 
     public void write(String text) throws IOException {
-        if (text.equals(Globals.lbrace)) {
+        if (text.equals(Globals.nl)) {
+            w.write(Globals.nl);
+            tabs = true;
+        } else if (text.equals(Globals.lbrace)) {
+            w.write(" " + text);
+            w.write(Globals.nl);
             numOfTabs++;
+            writeTabs();
         } else if (text.equals(Globals.rbrace)) {
             numOfTabs--;
-        }
-
-        if (text.equals(Globals.nl)) {
+            writeTabs();
             w.write(text);
-            tabs=true;
+            w.write(Globals.nl);
         } else {
-            if (tabs){
-                this.writeTabs();
+            if (tabs == true){
+                 writeTabs();
             }
-            if (!text.equals(Globals.semic) && !tabs) {
+
+            if (!text.equals(Globals.semic)) {
                 w.write(" " + text);
             } else {
                 w.write(text);

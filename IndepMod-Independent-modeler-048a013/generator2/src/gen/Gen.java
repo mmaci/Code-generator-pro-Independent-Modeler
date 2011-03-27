@@ -11,9 +11,9 @@ import cz.cvut.indepmod.classmodel.api.model.RelationType;
 import cz.cvut.indepmod.classmodel.api.model.Visibility;
 import integration.OutputJavaClass;
 import java.io.IOException;
+import java.util.Iterator;
 
 /* predela Globlas na enum*/
-
 public class Gen {
 
     private IClassModelModel myModel;
@@ -41,7 +41,6 @@ public class Gen {
         this.writeGeneralization(clazz);
         this.writeRealization(clazz);
         out.write(Globals.lbrace);
-        out.write(Globals.nl);
         this.writeAtributes(clazz);
         this.writeComposition(clazz);
         this.writeAggregation(clazz);
@@ -133,33 +132,55 @@ public class Gen {
             out.write(iMethod.getType().toString());
             out.write(iMethod.getName());
             out.write("(");
+
+            for (Iterator it = iMethod.getAttributeModels().iterator(); it.hasNext();) {
+                IAttribute attrib = (IAttribute) it.next();
+                out.write(attrib.getType().getTypeName());
+                out.write(attrib.getName());
+                if (it.hasNext()){
+                    out.write(Globals.colon);
+                }
+            }
+            
             out.write(")");
-            out.write(Globals.nl);
             out.write(Globals.lbrace);
             this.writeAtributes(clazz);
             out.write(Globals.rbrace);
         }
-
     }
 
     private void writeAtributes(IClass clazz) throws IOException {
         for (IAttribute attribute : clazz.getAttributeModels()) {
-            for (IAnotation anot : attribute.getAnotations()) {
-                out.write("@");
-                out.write(anot.getName());
-                out.write("(");
-                for (IAnotationValue anotValue : anot.getAttributes()) {
-                    out.write(anotValue.getName());
-                    /* dopnit jejich hodnoty - jeste se v tom nevyznam */
-                    out.write(",");
-                }
-                out.write(")");
-                out.write(Globals.nl);
-            }
+            this.writeAnotations(attribute);
             this.writeJavaVisib(attribute.getVisibility());
             out.write(attribute.getType().toString());
             out.write(attribute.getName().toString());
             out.write(Globals.semic);
+            out.write(Globals.nl);
+        }
+    }
+
+    private void writeAnotations(IAttribute attribute) throws IOException {
+        System.out.println(attribute.getAnotations().size());
+        for (IAnotation anot : attribute.getAnotations()) {
+            out.write("@"+anot.getName() + "(");
+            for (Iterator it = anot.getAttributes().iterator(); it.hasNext();) {
+                IAnotationValue anotValue = (IAnotationValue) it.next();
+                out.write(anotValue.getName());
+                out.write("=\"");
+                for (Iterator it1 = anotValue.getValues().iterator(); it1.hasNext();) {
+                    String value =  (String) it1.next();
+                    out.write(value);
+                    if (it1.hasNext()){
+                        out.write(Globals.colon);
+                    }
+                }
+                out.write("\"");
+                if (it.hasNext()) {
+                    out.write(Globals.colon);
+                }
+            }
+            out.write(")");
             out.write(Globals.nl);
         }
     }

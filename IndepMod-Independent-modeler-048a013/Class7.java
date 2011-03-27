@@ -1,2 +1,2 @@
-public Class7 implements Class6 {
-}
+ public Class7 implements Class6 {
+	}

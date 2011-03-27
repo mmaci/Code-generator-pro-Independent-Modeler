@@ -17,4 +17,5 @@ public class Globals {
     public static final String pub = "public";
     public static final String pro = "protected";
     public static final String semic = ";";
+    public static final String colon = ",";
 }

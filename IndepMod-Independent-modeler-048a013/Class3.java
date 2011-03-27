@@ -1,3 +1,3 @@
-public Class3 {
-	private Collection Class21;
+ public Class3 {
+	 private Collection Class21;
 }
