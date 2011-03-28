@@ -2,42 +2,84 @@
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN"
                             "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
-    <folder name="Actions">
-        <folder name="File">
-            <file name="cz-cvut-generator-GeneratorSettingsAction.instance">
-                <!--cz.cvut.generator.GeneratorSettingsAction-->
-                <attr
-                    bundlevalue="cz.cvut.generator.Bundle#CTL_GeneratorSettingsAction" name="displayName"/>
-                <attr methodvalue="org.openide.awt.Actions.context" name="instanceCreate"/>
-                <attr name="type" stringvalue="org.openide.loaders.DataObject"/>
-                <attr methodvalue="org.openide.awt.Actions.inject" name="delegate"/>
-                <attr name="injectable" stringvalue="cz.cvut.generator.GeneratorSettingsAction"/>
-                <attr name="selectionType" stringvalue="EXACTLY_ONE"/>
-                <attr boolvalue="false" name="noIconInMenu"/>
+    <folder name="xml">
+        <folder name="entities">
+            <folder name="cz_cvut_generator">
+                <file name="generator" url="nbres:/org/netbeans/modules/settings/resources/properties-1_0.dtd">
+                    <!--cz.cvut.generator.generatorTopComponent-->
+                    <attr name="hint.originalPublicID" stringvalue="-//cz.cvut.generator//generator//EN"/>
+                </file>
+            </folder>
+        </folder>
+        <folder name="memory">
+            <folder name="cz">
+                <folder name="cvut">
+                    <folder name="generator">
+                        <file name="generatorTopComponent">
+                            <!--cz.cvut.generator.generatorTopComponent-->
+                            <attr name="settings.providerPath" stringvalue="xml/lookups//cz_cvut_generator/generator.instance"/>
+                        </file>
+                    </folder>
+                </folder>
+            </folder>
+        </folder>
+        <folder name="lookups">
+            <folder name="cz_cvut_generator">
+                <file name="generator.instance">
+                    <!--cz.cvut.generator.generatorTopComponent-->
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.create" name="instanceCreate"/>
+                    <attr
+                        methodvalue="org.netbeans.api.settings.Factory.properties" name="settings.convertor"/>
+                    <attr name="settings.instanceClass" stringvalue="cz.cvut.generator.generatorTopComponent"/>
+                    <attr name="settings.instanceOf" stringvalue="cz.cvut.generator.generatorTopComponent"/>
+                    <attr boolvalue="true" name="xmlproperties.preventStoring"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="cz-cvut-generator-generatorTopComponent.shadow">
+                <!--cz.cvut.generator.generatorTopComponent-->
+                <attr name="originalFile" stringvalue="Actions/Window/cz-cvut-generator-generatorTopComponent.instance"/>
             </file>
         </folder>
     </folder>
-    <folder name="Loaders">
-        <folder name="text">
-            <folder name="IndepModClassNotation">
-                <folder name="Actions">
-                    <file name="cz-cvut-generator-GeneratorSettingsAction.shadow">
-                        <!--cz.cvut.generator.GeneratorSettingsAction-->
-                        <attr name="originalFile" stringvalue="Actions/File/cz-cvut-generator-GeneratorSettingsAction.instance"/>
-                        <attr intvalue="150" name="position"/>
-                    </file>
-                    <file name="cz-cvut-generator-GeneratorSettingsAction-separatorAfter.instance">
-                        <!--cz.cvut.generator.GeneratorSettingsAction-->
-                        <attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>
-                        <attr intvalue="175" name="position"/>
-                    </file>
-                    <file name="cz-cvut-generator-GeneratorSettingsAction-separatorBefore.instance">
-                        <!--cz.cvut.generator.GeneratorSettingsAction-->
-                        <attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>
-                        <attr intvalue="125" name="position"/>
-                    </file>
-                </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="generatorTopComponent.settings">
+                <!--cz.cvut.generator.generatorTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+  <instance class="cz.cvut.generator.generatorTopComponent"/>
+</settings>
+]]></file>
+        </folder>
+        <folder name="Modes">
+            <folder name="commonpalette">
+                <file name="generatorTopComponent.wstcref">
+                    <!--cz.cvut.generator.generatorTopComponent--><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
+<tc-ref version="2.0">
+  <tc-id id="generatorTopComponent"/>
+  <state opened="true"/>
+</tc-ref>
+]]></file>
             </folder>
+        </folder>
+    </folder>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="cz-cvut-generator-generatorTopComponent.instance">
+                <!--cz.cvut.generator.generatorTopComponent-->
+                <attr
+                    methodvalue="org.openide.windows.TopComponent.openAction" name="instanceCreate"/>
+                <attr name="component" newvalue="cz.cvut.generator.generatorTopComponent"/>
+                <attr name="preferredID" stringvalue="generatorTopComponent"/>
+                <attr
+                    bundlevalue="cz.cvut.generator.Bundle#CTL_generatorAction" name="displayName"/>
+            </file>
         </folder>
     </folder>
 </filesystem>
