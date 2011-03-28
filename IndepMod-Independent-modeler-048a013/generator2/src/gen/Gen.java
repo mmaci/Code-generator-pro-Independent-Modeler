@@ -49,7 +49,8 @@ public class Gen {
         out.write(clazz.getTypeName().toString());
         this.writeGeneralization(clazz);
         this.writeRealization(clazz);
-        out.write(Globals.lbrace);        
+        out.write(Globals.lbrace);  
+        this.writeAtributes(clazz);
         this.writeComposition(clazz);
         this.writeAggregation(clazz);
         this.writeMethods(clazz);
@@ -319,8 +320,7 @@ public class Gen {
 
     private void writeAnotations(IAttribute attribute) throws IOException {
         System.out.println(attribute.getAnotations().size());
-        for (IAnotation anot : attribute.getAnotations()) {            
-            System.out.println(anot.getName());
+        for (IAnotation anot : attribute.getAnotations()) {                        
             out.write("@"+anot.getName() + "(");
             for (Iterator it = anot.getAttributes().iterator(); it.hasNext();) {
                 IAnotationValue anotValue = (IAnotationValue) it.next();
