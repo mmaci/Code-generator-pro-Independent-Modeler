@@ -24,9 +24,11 @@ public final class Generator implements ActionListener {
         } else {
             //Zacni generovat
             System.out.println("Otevreny classs model ma: "+ classModel.getClasses().size() +" trid.");
-            Gen gen = new Gen(classModel);
+            GenJavaClass gen = new GenJavaClass(classModel);
+            GenSQL genSql = new GenSQL(classModel);
             try {
                 gen.generateModel();
+                genSql.generateModel();
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
