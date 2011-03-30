@@ -15,6 +15,9 @@ import integration.OutputJavaClass;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.LinkedList;
 
 /**
  *
@@ -24,7 +27,7 @@ public class GenSQL {
 
     private IClassModelModel myModel;
     private OutputJavaClass out = null;
-    private String suffix = ".java";
+    private String suffix = ".java";    
 
     public GenSQL(IClassModelModel model) {
         System.out.println("predan model...");
@@ -44,7 +47,7 @@ public class GenSQL {
     }
 
 
-        /**
+    /**
      * Otevreni souboru pro zapis a zacatek generovani sql
      *
      * @param filename
@@ -52,11 +55,58 @@ public class GenSQL {
      * @throws IOException
      */
     private void generateSql(BufferedWriter output, IClass c) throws IOException {
-        try {
+        try {        
             writeSqlTable(output, c);
             writeSqlRelations(output, c);
         } catch (IOException e) {
             throw e; // pripadnou psani preda dal
+        }
+    }
+    
+    /**
+     * pokud se jedna o primarni klic, vrati true, jinak false
+     * 
+     * @param input
+     * @return 
+     */
+    public boolean isPrimaryKey(String input)
+    {                
+        if (input.startsWith("pk_"))
+            return true;
+        return false;           
+    }
+    
+    /**
+     * Vytahne z tridy primarni klice, ktere jsou identifikovany prefixem pk_
+     * 
+     * @param c 
+     */
+    public List<IAttribute> getPrimaryKeys(IClass c)
+    {
+        List<IAttribute> PrimaryKeys = new LinkedList<IAttribute>();
+        for (IAttribute attribute : c.getAttributeModels()) {
+            if (this.isPrimaryKey(attribute.getName()))
+                PrimaryKeys.add(attribute);
+        }
+        return PrimaryKeys;
+    }
+    
+    /**
+     * VYpise jmena primarnich klicu ve tvaru jmeno1, jmeno2, jmeno3, ...
+     * 
+     * @param output
+     * @param c
+     * @throws IOException 
+     */
+    public void writePrimaryKeys(BufferedWriter output, IClass c) throws IOException
+    {
+        List<IAttribute> PrimaryKeys = getPrimaryKeys(c);
+        for (Iterator<IAttribute> it = PrimaryKeys.iterator(); it.hasNext();) 
+        {
+            IAttribute iAttribute = it.next();
+            output.write(iAttribute.getName());
+            if (it.hasNext())
+                output.write(", ");                                
         }
     }
 
@@ -83,7 +133,7 @@ public class GenSQL {
         output.write(Globals.nl);
     }
 
-        /**
+    /**
      * Vypis jednotlivych atributu pro jednotlive tabulky
      *
      * @param output
@@ -96,6 +146,7 @@ public class GenSQL {
             output.write(Globals.nl);
         }
         output.write("PRIMARY KEY (");
+            this.writePrimaryKeys(output, c);
         output.write(")");
     }
 
@@ -127,7 +178,7 @@ public class GenSQL {
             IClass end = rel.getEndingClass();
             RelationType type = rel.getRelationType();
             Cardinality start_rel = filterCardinality(rel.getStartCardinality());
-            Cardinality end_rel = filterCardinality(rel.getEndCardinality());
+            Cardinality end_rel = filterCardinality(rel.getEndCardinality());            
 
             /**
              * Primarni klic je treba predelat na seznam, neb kazda tabulka
@@ -173,7 +224,7 @@ public class GenSQL {
                     // output.write(pk.getName()+" "+pk.getType().toString()+",");
                     output.write(Globals.nl);
                     output.write("PRIMARY KEY (");
-                    // output.write(pk.getName());
+                        this.writePrimaryKeys(output, c);
                     output.write(")");
                     output.write(Globals.nl);
                     output.write(");");
@@ -183,5 +234,6 @@ public class GenSQL {
             output.write(Globals.nl);
 
         }
-    }
+    }        
+            
 }
