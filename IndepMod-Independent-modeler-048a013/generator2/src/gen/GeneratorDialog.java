@@ -11,12 +11,25 @@
 
 package gen;
 
+import javax.swing.JFileChooser;
 /**
  *
  * @author Zdenek
  */
 public class GeneratorDialog extends javax.swing.JPanel {
 
+    private boolean  extern = false;
+    private Object selectedItem="Java classes";
+    private String save_path;
+
+    public String getSave_path() {
+        return save_path;
+    }
+
+    public Object getSelectedItem() {
+        return selectedItem;
+    }
+    
     /** Creates new form GeneratorDialog */
     public GeneratorDialog() {
         initComponents();
@@ -40,18 +53,28 @@ public class GeneratorDialog extends javax.swing.JPanel {
         jLabel1.setText(org.openide.util.NbBundle.getMessage(GeneratorDialog.class, "GeneratorDialog.jLabel1.text")); // NOI18N
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Java classes", "SQL tables", "XML" }));
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
 
         jCheckBox1.setSelected(true);
         jCheckBox1.setText(org.openide.util.NbBundle.getMessage(GeneratorDialog.class, "GeneratorDialog.jCheckBox1.text")); // NOI18N
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+        jCheckBox1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jCheckBox1StateChanged(evt);
             }
         });
 
         jTextField1.setText(org.openide.util.NbBundle.getMessage(GeneratorDialog.class, "GeneratorDialog.jTextField1.text")); // NOI18N
 
         jButton1.setText(org.openide.util.NbBundle.getMessage(GeneratorDialog.class, "GeneratorDialog.jButton1.text")); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -88,9 +111,32 @@ public class GeneratorDialog extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        selectedItem = jComboBox1.getSelectedItem();
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void jCheckBox1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jCheckBox1StateChanged
+         if(jCheckBox1.isSelected()){
+            jTextField1.setVisible(true);
+            jButton1.setVisible(true);
+            extern = true;
+        }else{
+            jTextField1.setVisible(false);
+            jButton1.setVisible(false);
+            extern = false;
+        }
+    }//GEN-LAST:event_jCheckBox1StateChanged
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        JFileChooser jfc = new JFileChooser();
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int sct = jfc.showOpenDialog(null);
+        if(sct == JFileChooser.APPROVE_OPTION){
+            System.out.println(jfc.getSelectedFile().getAbsolutePath());
+            save_path = jfc.getSelectedFile().getAbsolutePath();
+            jTextField1.setText(save_path);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
