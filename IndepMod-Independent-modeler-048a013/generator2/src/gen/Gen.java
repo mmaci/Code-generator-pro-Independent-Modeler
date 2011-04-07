@@ -17,7 +17,7 @@ import java.io.*;
 import gen.Cardinality;
 
 /* predela Globlas na enum*/
-public class Gen {
+public class Gen implements IGen{
 
     private IClassModelModel myModel;
     private OutputJavaClass out = null;
@@ -28,7 +28,8 @@ public class Gen {
         myModel = model;
     }
 
-    public void generateModel() throws IOException {
+    @Override
+    public void generateModel(String save_path) throws IOException {
         System.out.println("generovani...");
         String filename = "test.sql"; // jmeno souboru do ktereho budem zapisovat
         FileWriter fstream = new FileWriter(filename);

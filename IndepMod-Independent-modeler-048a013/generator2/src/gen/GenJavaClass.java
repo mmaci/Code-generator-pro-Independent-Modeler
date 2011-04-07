@@ -14,31 +14,30 @@ import java.util.Iterator;
 import java.io.*;
 
 /* predela Globlas na enum*/
-public class GenJavaClass {
+public class GenJavaClass implements IGen{
 
     private IClassModelModel myModel;
     private OutputJavaClass out = null;
     private String suffix = ".java";
+    private String save_path;
 
     public GenJavaClass(IClassModelModel model) {
         System.out.println("predan model...");
         myModel = model;
     }
 
-    public void generateModel() throws IOException {
-        System.out.println("generovani...");
-        String filename = "test.sql"; // jmeno souboru do ktereho budem zapisovat
-        FileWriter fstream = new FileWriter(filename);
-        BufferedWriter output = new BufferedWriter(fstream);
+    @Override
+    public void generateModel(String save_path) throws IOException {
+
 
         for (IClass iClass : myModel.getClasses()) {
-            generateClass(iClass);
+            generateClass(iClass, save_path);
         }
-        output.close();
+
     }
 
-    private void generateClass(IClass clazz) throws IOException {
-        out = new OutputJavaClass(clazz.getTypeName().toString() + suffix);
+    private void generateClass(IClass clazz, String save_path) throws IOException {
+        out = new OutputJavaClass(save_path + File.separator + clazz.getTypeName().toString() + suffix);
 
         this.writeAtributes(clazz);
         this.writeJavaVisib(clazz.getVisibility());

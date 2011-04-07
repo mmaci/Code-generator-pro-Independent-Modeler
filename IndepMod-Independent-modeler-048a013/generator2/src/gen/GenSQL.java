@@ -13,6 +13,7 @@ import cz.cvut.indepmod.classmodel.api.model.IRelation;
 import cz.cvut.indepmod.classmodel.api.model.RelationType;
 import integration.OutputJavaClass;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
@@ -23,7 +24,7 @@ import java.util.LinkedList;
  *
  * @author radek
  */
-public class GenSQL {
+public class GenSQL implements IGen{
 
     private IClassModelModel myModel;
     private OutputJavaClass out = null;
@@ -34,10 +35,11 @@ public class GenSQL {
         myModel = model;
     }
 
-    public void generateModel() throws IOException {
+    @Override
+    public void generateModel(String save_path) throws IOException {
         System.out.println("generovani...");
-        String filename = "test.sql"; // jmeno souboru do ktereho budem zapisovat
-        FileWriter fstream = new FileWriter(filename);
+        String filename = "generated_db_schema.sql"; // jmeno souboru do ktereho budem zapisovat
+        FileWriter fstream = new FileWriter(save_path + File.separator + filename);
         BufferedWriter output = new BufferedWriter(fstream);
 
         for (IClass iClass : myModel.getClasses()) {
