@@ -19,7 +19,6 @@ public class GenJavaClass implements IGen{
     private IClassModelModel myModel;
     private OutputJavaClass out = null;
     private String suffix = ".java";
-    private String save_path;
 
     public GenJavaClass(IClassModelModel model) {
         System.out.println("predan model...");
@@ -28,9 +27,10 @@ public class GenJavaClass implements IGen{
 
     @Override
     public void generateModel(String save_path) throws IOException {
-
-
         for (IElement iClass : myModel.getClasses()) {
+            if (save_path == null){
+                save_path = ".";
+            }
             generateClass(iClass, save_path);
         }
 
@@ -39,7 +39,6 @@ public class GenJavaClass implements IGen{
     private void generateClass(IElement clazz, String save_path) throws IOException {
         out = new OutputJavaClass(save_path + File.separator + clazz.getTypeName().toString() + suffix);
 
-        this.writeAtributes(clazz);
         this.writeJavaVisib(clazz.getVisibility());
         out.write(clazz.getTypeName().toString());
         this.writeGeneralization(clazz);
@@ -52,10 +51,6 @@ public class GenJavaClass implements IGen{
         out.write(Globals.rbrace);
         out.close();
     }
-
-
-
-   
 
     private void writeGeneralization(IElement clazz) throws IOException {
         for (IRelation relation : clazz.getRelatedClass()) {

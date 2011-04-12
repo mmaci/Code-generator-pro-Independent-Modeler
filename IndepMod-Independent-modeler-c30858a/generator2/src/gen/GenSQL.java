@@ -11,7 +11,6 @@ import cz.cvut.indepmod.classmodel.api.model.IElement;
 import cz.cvut.indepmod.classmodel.api.model.IClassModelModel;
 import cz.cvut.indepmod.classmodel.api.model.IRelation;
 import cz.cvut.indepmod.classmodel.api.model.RelationType;
-import integration.OutputJavaClass;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
