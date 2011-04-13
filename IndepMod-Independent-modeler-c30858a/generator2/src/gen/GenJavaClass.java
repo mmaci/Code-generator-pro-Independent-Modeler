@@ -47,6 +47,7 @@ public class GenJavaClass implements IGen{
         this.writeAtributes(clazz);
         this.writeComposition(clazz);
         this.writeAggregation(clazz);
+        this.writeRelation(clazz);
         this.writeMethods(clazz);
         out.write(Globals.rbrace);
         out.close();
@@ -73,7 +74,7 @@ public class GenJavaClass implements IGen{
                     numberOfComp++;
                     out.write(Globals.pri);
                     out.write(relation.getEndingClass().getTypeName());
-                    out.write(relation.getEndingClass().getTypeName() + numberOfComp);
+                    out.write(relation.getEndingClass().getTypeName().toLowerCase() + numberOfComp);
                     out.write(Globals.semic);
                     out.write(Globals.nl);
                 }
@@ -94,7 +95,7 @@ public class GenJavaClass implements IGen{
                     } else {
                         out.write(relation.getEndingClass().getTypeName());
                     }
-                    out.write(relation.getEndingClass().getTypeName() + numberOfAggreg);
+                    out.write(relation.getEndingClass().getTypeName().toLowerCase() + numberOfAggreg);
                     out.write(Globals.semic);
                     out.write(Globals.nl);
                 }
@@ -129,6 +130,39 @@ public class GenJavaClass implements IGen{
         }
     }
 
+    private void writeRelation(IElement clazz) throws IOException {
+        int numberOfRelEndClass = 0;
+        int numberOfRelStartClass = 0;
+        for (IRelation relation : clazz.getRelatedClass()) {
+            if (relation.getRelationType() == RelationType.RELATION) {
+                if (relation.getEndingClass() != clazz) {
+                    numberOfRelEndClass++;
+                    out.write(Globals.pri);
+                    if (relation.getEndCardinality().getTo() == -1) {
+                        out.write("Collection");
+                    } else {
+                        out.write(relation.getEndingClass().getTypeName());
+                    }
+                    out.write(relation.getEndingClass().getTypeName().toLowerCase() + numberOfRelEndClass);
+                    out.write(Globals.semic);
+                    out.write(Globals.nl);
+                }
+                if (relation.getStartingClass() != clazz) {
+                    numberOfRelStartClass++;
+                    out.write(Globals.pri);
+                    if (relation.getStartCardinality().getTo() == -1) {
+                        out.write("Collection");
+                    } else {
+                        out.write(relation.getStartingClass().getTypeName());
+                    }
+                    out.write(relation.getStartingClass().getTypeName().toLowerCase() + numberOfRelStartClass);
+                    out.write(Globals.semic);
+                    out.write(Globals.nl);
+                }
+            }
+        }
+    } 
+    
     private void writeMethods(IElement clazz) throws IOException {
         for (IMethod iMethod : clazz.getMethodModels()) {
             this.writeJavaVisib(iMethod.getVisibility());
