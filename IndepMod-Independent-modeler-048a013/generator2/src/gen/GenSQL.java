@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Hashtable;
 
 /**
  *
@@ -28,7 +29,13 @@ public class GenSQL implements IGen{
 
     private IClassModelModel myModel;
     private OutputJavaClass out = null;
-    private String suffix = ".java";    
+    private String suffix = ".java";
+    
+    private List<String> Tables = new LinkedList<String>();
+    private Hashtable<String, List> Attributes = new Hashtable<String, List>();
+    private Hashtable<String, List> PrimaryKeys = new Hashtable<String, List>();
+    private Hashtable<String, List> Constraints = new Hashtable<String, List>();
+    private Hashtable<String, List> References = new Hashtable<String, List>();
 
     public GenSQL(IClassModelModel model) {
         System.out.println("predan model...");
@@ -42,13 +49,80 @@ public class GenSQL implements IGen{
         FileWriter fstream = new FileWriter(save_path + File.separator + filename);
         BufferedWriter output = new BufferedWriter(fstream);
 
-        for (IClass iClass : myModel.getClasses()) {
+        for (IClass iClass : myModel.getClasses()) 
+        {
             generateSql(output, iClass);
         }
         output.close();
     }
 
-
+    /**
+     * Vybere jmena vsech tabulek a vlozi je do seznamu.
+     * Soucasne i rodicovska funkce dalsich veci jako atributy, zavislosti, atd.
+     */
+    public void genTables()
+    {
+        for (IClass iClass : myModel.getClasses())
+        {
+            Tables.add(iClass.toString());
+            genAttributes(iClass);
+            genRelations(iClass);
+        }
+    }
+    
+    /**
+     * Vybere jmena vsech atributu dane tridy a prida je do seznamu vazaneho na danou tridu     
+     */
+    public void genAttributes(IClass iClass)
+    {
+        List<String> attrList = new LinkedList();   // seznam atributu
+        List<String> pkList = new LinkedList();     // seznam primarnich klicu
+        for (IAttribute iAttribute : iClass.getAttributeModels())   // projde vsechny atributy kazde tridy
+        {            
+            attrList.add(iAttribute.toString());            
+            if (isPrimaryKey(iAttribute.toString()))
+            {
+                pkList.add(iAttribute.toString());
+            }
+        }
+        // vytvori seznamy atributu a primarni klicu vazane na jmena dane tabulky
+        Attributes.put(iClass.toString(), attrList);
+        PrimaryKeys.put(iClass.toString(), pkList);
+    }
+    
+    /**
+     * Vygeneruje constrainty, tabulky, atributy podle jednotlivych relaci     
+     */
+    public void genRelations(IClass iClass)
+    {
+        for (IRelation iRelation : iClass.getRelatedClass()) 
+        {
+            IClass start = iRelation.getStartingClass();
+            IClass end = iRelation.getEndingClass();
+            RelationType type = iRelation.getRelationType();
+            Cardinality startCardinality = filterCardinality(iRelation.getStartCardinality());
+            Cardinality endCardinality = filterCardinality(iRelation.getEndCardinality());
+            
+            switch (type) {
+                case RELATION:
+                    // N-N relace
+                    if ((startCardinality == Cardinality.ZERO_N && endCardinality == Cardinality.ZERO_N)
+                     || (startCardinality == Cardinality.ONE_ONE && endCardinality == Cardinality.ONE_ONE)) 
+                    {                      
+                        break;
+                    }
+                    // 1-N relace
+                    if (startCardinality == Cardinality.ONE_ONE && endCardinality == Cardinality.ZERO_N) 
+                    {
+                        break;
+                    }
+                    break;
+                case COMPOSITION:                        
+                    break;
+            }
+        }
+    }
+    
     /**
      * Otevreni souboru pro zapis a zacatek generovani sql
      *
