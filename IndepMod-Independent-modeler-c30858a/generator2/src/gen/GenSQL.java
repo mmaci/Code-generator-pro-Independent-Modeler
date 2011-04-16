@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gen;
 
 import cz.cvut.indepmod.classmodel.api.model.IAttribute;
@@ -11,21 +6,32 @@ import cz.cvut.indepmod.classmodel.api.model.IElement;
 import cz.cvut.indepmod.classmodel.api.model.IClassModelModel;
 import cz.cvut.indepmod.classmodel.api.model.IRelation;
 import cz.cvut.indepmod.classmodel.api.model.RelationType;
+import integration.OutputJavaClass;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
- *
- * @author radek
+ * @Author Pavel Macenauer
  */
 public class GenSQL implements IGen{
 
     private IClassModelModel myModel;
+    private OutputJavaClass out = null;
+    private String suffix = ".java";
+    
+    // Struktury
+    private Set<String> Tables = new HashSet<String>();
+    private HashMap<String, Set<String>> Attributes = new HashMap<String, Set<String>>();
+    private HashMap<String, Set<String>> PrimaryKeys = new HashMap<String, Set<String>>();   
+    private HashMap<String, Set<String>> References = new HashMap<String, Set<String>>();
+    private HashMap<String, HashMap<String, String>> ForeignKeys = new HashMap<String, HashMap<String, String>>();
+    private HashMap<String, Set<String>> Unique = new HashMap<String, Set<String>>();
+    
 
     public GenSQL(IClassModelModel model) {
         System.out.println("predan model...");
@@ -39,20 +45,159 @@ public class GenSQL implements IGen{
         FileWriter fstream = new FileWriter(save_path + File.separator + filename);
         BufferedWriter output = new BufferedWriter(fstream);
 
-        for (IElement iClass : myModel.getClasses()) {
-            generateSql(output, iClass);
+        for (IElement element : myModel.getClasses()) 
+        {
+            // generateSql(output, element);
         }
         output.close();
     }
 
-
     /**
-     * Otevreni souboru pro zapis a zacatek generovani sql
-     *
-     * @param filename
-     * @param c
-     * @throws IOException
+     * Vybere jmena vsech tabulek a vlozi je do seznamu.
+     * Soucasne i rodicovska funkce dalsich veci jako atributy, zavislosti, atd.
      */
+    public void genTables()
+    {
+        for (IElement element : myModel.getClasses())
+        {
+            Tables.add(element.toString());
+            genAttributes(element);        
+            genRelations(element);         
+        }
+    }
+    
+    /**
+     * Vybere jmena vsech atributu dane tridy a prida je do seznamu vazaneho na danou tridu     
+     */
+    public void genAttributes(IElement element)
+    {
+        Set<String> attrSet = new HashSet<String>();   // seznam atributu
+        Set<String> pkSet = new HashSet<String>();     // seznam primarnich klicu
+        for (IAttribute iAttribute : element.getAttributeModels())   // projde vsechny atributy kazde tridy
+        {            
+            attrSet.add(iAttribute.toString());            
+            if (isPrimaryKey(iAttribute.toString()))
+            {
+                pkSet.add(iAttribute.toString());
+            }
+        }
+        // vytvori seznamy atributu a primarni klicu vazane na jmena dane tabulky
+        Attributes.put(element.toString(), attrSet);
+        PrimaryKeys.put(element.toString(), pkSet);
+    }
+    
+    /**
+     * Vygeneruje constrainty, tabulky, atributy podle typu jednotlivych relaci     
+     */
+    public void genRelations(IElement element)
+    {
+        for (IRelation relation : element.getRelatedClass()) 
+        {
+            IElement start = relation.getStartingClass();
+            IElement end = relation.getEndingClass();
+            RelationType type = relation.getRelationType();
+            Cardinality startCardinality = filterCardinality(relation.getStartCardinality());
+            Cardinality endCardinality = filterCardinality(relation.getEndCardinality());
+            
+            switch (type) 
+            {
+                /**
+                 * RELACE
+                 */
+                case RELATION:
+                    // N-N relace
+                    // 1-1 relace
+                    if ((startCardinality == Cardinality.ZERO_N && endCardinality == Cardinality.ZERO_N)
+                     || (startCardinality == Cardinality.ONE_ONE && endCardinality == Cardinality.ONE_ONE)) 
+                    {
+                        String tableName = start.toString() + "_" + end.toString(); // jmeno relacni tabulky
+                        
+                        Tables.add(tableName); // prida mezi tabulky
+                                                
+                        Set<String> relAttr = new HashSet<String>();
+                        Set<String> relUnique = new HashSet<String>();
+                        HashMap<String, String> relForeignKeys = new HashMap<String, String>();
+                        // vytvori atributy a unique constraints pro relacni tabulku z primarnich klicu startovni relace
+                        for (String pk : PrimaryKeys.get(start.toString()))   
+                        {
+                            String attrName = start.toString() + "_" + pk;  // jmeno atributu
+                            relAttr.add(attrName);                          // atributy
+                            relUnique.add(attrName);                        // unique constraints
+                            relForeignKeys.put(attrName, start.toString() + "(" + pk + ")"); // foreign key constraints
+                        }                           
+                        
+                        // vytvori atributy a unique constraints pro relacni tabulku z primarnich klicu koncove relace                        
+                        for (String pk: PrimaryKeys.get(end.toString()))
+                        {
+                            String attrName = end.toString() + "_" + pk;    // jmeno atributu
+                            relAttr.add(attrName);                          // atributy
+                            relUnique.add(attrName);                        // unique constraints
+                            relForeignKeys.put(attrName, start.toString() + "(" + pk + ")"); // foreign key constraints
+                        }
+                        
+                        // prida jednotlive struktury do globalnich map
+                        Attributes.put(tableName, relAttr);
+                        Unique.put(tableName, relUnique);
+                        ForeignKeys.put(tableName, relForeignKeys);
+                        break;
+                    }
+                    // 1-N relace
+                    if (startCardinality == Cardinality.ONE_ONE && endCardinality == Cardinality.ZERO_N) 
+                    {                        
+                        // prida mezi atributy N entity primarni klice 1 entity a udela zaznam o cizim klici                        
+                        Set<String> endAttr = Attributes.get(end.toString());
+                        HashMap<String, String> relForeignKeys = new HashMap<String, String>();
+                        for (String pk: PrimaryKeys.get(start.toString()))
+                        {
+                            String attrName = start.toString() + "_" + pk;
+                            endAttr.add(attrName);
+                            relForeignKeys.put(attrName, start.toString() + "(" + pk + ")");
+                        }
+                        
+                        // udela zaznam o cizim klici                        
+                        ForeignKeys.put(end.toString(), relForeignKeys);
+                        break;
+                    }
+                    break;
+                    
+                /**
+                 * Kompozice
+                 */
+                case COMPOSITION:                        
+                    break;
+            }
+        }
+    }
+    
+    
+    /**
+     * Pomocne metody
+     */
+    
+    public boolean isPrimaryKey(String input)
+    {                
+        if (input.startsWith("pk_"))
+            return true;
+        return false;           
+    }
+    
+    private Cardinality filterCardinality(ICardinality cardin) {
+        Cardinality result = Cardinality.ERROR;
+
+        if (cardin.getFrom() == 1 && cardin.getTo() == -1) {
+            result = Cardinality.ONE_N;
+        } else if (cardin.getFrom() == 1 && cardin.getTo() == 1) {
+            result = Cardinality.ONE_ONE;
+        } else if (cardin.getFrom() == 0 && cardin.getTo() == -1) {
+            result = Cardinality.ZERO_N;
+        }
+
+        return result;
+    }
+    
+/******************************************************************************/
+    
+   /*
     private void generateSql(BufferedWriter output, IElement c) throws IOException {
         try {        
             writeSqlTable(output, c);
@@ -62,60 +207,9 @@ public class GenSQL implements IGen{
         }
     }
     
-    /**
-     * pokud se jedna o primarni klic, vrati true, jinak false
-     * 
-     * @param input
-     * @return 
-     */
-    public boolean isPrimaryKey(String input)
-    {                
-        if (input.startsWith("pk_"))
-            return true;
-        return false;           
-    }
+ 
     
-    /**
-     * Vytahne z tridy primarni klice, ktere jsou identifikovany prefixem pk_
-     * 
-     * @param c 
-     */
-    public List<IAttribute> getPrimaryKeys(IElement c)
-    {
-        List<IAttribute> PrimaryKeys = new LinkedList<IAttribute>();
-        for (IAttribute attribute : c.getAttributeModels()) {
-            if (this.isPrimaryKey(attribute.getName()))
-                PrimaryKeys.add(attribute);
-        }
-        return PrimaryKeys;
-    }
-    
-    /**
-     * VYpise jmena primarnich klicu ve tvaru jmeno1, jmeno2, jmeno3, ...
-     * 
-     * @param output
-     * @param c
-     * @throws IOException 
-     */
-    public void writePrimaryKeys(BufferedWriter output, IElement c) throws IOException
-    {
-        List<IAttribute> PrimaryKeys = getPrimaryKeys(c);
-        for (Iterator<IAttribute> it = PrimaryKeys.iterator(); it.hasNext();) 
-        {
-            IAttribute iAttribute = it.next();
-            output.write(iAttribute.getName());
-            if (it.hasNext())
-                output.write(", ");                                
-        }
-    }
-
-    /**
-     * Vypis jednotlivych tabulek
-     *
-     * @param output
-     * @param c
-     * @throws IOException
-     */
+  
     private void writeSqlTable(BufferedWriter output, IElement c) throws IOException {
         output.write(Globals.nl);
         // ---
@@ -132,13 +226,7 @@ public class GenSQL implements IGen{
         output.write(Globals.nl);
     }
 
-    /**
-     * Vypis jednotlivych atributu pro jednotlive tabulky
-     *
-     * @param output
-     * @param c
-     * @throws IOException
-     */
+
     private void writeSqlAttributes(BufferedWriter output, IElement c) throws IOException {
         for (IAttribute attribute : c.getAttributeModels()) {
             output.write(attribute.getName() + " " + attribute.getType().toString() + ",");
@@ -149,27 +237,9 @@ public class GenSQL implements IGen{
         output.write(")");
     }
 
-    private Cardinality filterCardinality(ICardinality cardin) {
-        Cardinality result = Cardinality.ERROR;
 
-        if (cardin.getFrom() == 1 && cardin.getTo() == -1) {
-            result = Cardinality.ONE_N;
-        } else if (cardin.getFrom() == 1 && cardin.getTo() == 1) {
-            result = Cardinality.ONE_ONE;
-        } else if (cardin.getFrom() == 0 && cardin.getTo() == -1) {
-            result = Cardinality.ZERO_N;
-        }
 
-        return result;
-    }
 
-     /**
-     * Vypis sql pro jednotlive relace
-     *
-     * @param output
-     * @param c
-     * @throws IOException
-     */
     private void writeSqlRelations(BufferedWriter output, IElement c) throws IOException {
         for (IRelation rel : c.getRelatedClass()) {
             // zkraceni jednotlivych nazvu pro prehlednost
@@ -179,13 +249,7 @@ public class GenSQL implements IGen{
             Cardinality start_rel = filterCardinality(rel.getStartCardinality());
             Cardinality end_rel = filterCardinality(rel.getEndCardinality());            
 
-            /**
-             * Primarni klic je treba predelat na seznam, neb kazda tabulka
-             * muze byt identifikovana vice primarnimi klici.
-             *
-             * Hacek je v tom, ze momentalne nema IM implementovat system, jak
-             * rozlisovat primarni klice
-             */
+   
             // IAttribute pk_1;
             // IAttribute pk_2;
             output.write(Globals.nl);
@@ -233,6 +297,6 @@ public class GenSQL implements IGen{
             output.write(Globals.nl);
 
         }
-    }        
+    }        */
             
 }
