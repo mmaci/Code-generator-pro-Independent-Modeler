@@ -27,8 +27,20 @@ public class GenSQL implements IGen{
     private Set<String> Tables = new HashSet<String>();
     private HashMap<String, Set<String>> Attributes = new HashMap<String, Set<String>>();
     private HashMap<String, Set<String>> PrimaryKeys = new HashMap<String, Set<String>>();       
-    private HashMap<String, HashMap<String, String>> ForeignKeys = new HashMap<String, HashMap<String, String>>();
+    private HashMap<String, Set<FK>> ForeignKeys = new HashMap<String, Set<FK>>();
     private HashMap<String, Set<String>> Unique = new HashMap<String, Set<String>>();
+    
+    // ForeignKey structure
+    /**
+     * table
+     *      reference_table
+     *              attribute REFERENCE TO reference_table(attribute)
+     */
+    public class FK
+    {    
+        public String ref_table;
+        public HashMap<String, String> attr;        
+    }         
     
     public GenSQL(IClassModelModel model) {
         System.out.println("Predan model.");
@@ -43,7 +55,7 @@ public class GenSQL implements IGen{
         writeSqlTables(true);
         
         System.out.println("Generovani SQL dokonceno.");        
-    }    
+    }          
     
 // ---------------------- METODY PRO GENEROVANI STRUKTURY ----------------------
     
@@ -111,24 +123,30 @@ public class GenSQL implements IGen{
                                                 
                         Set<String> relAttr = new HashSet<String>();
                         Set<String> relUnique = new HashSet<String>();
-                        HashMap<String, String> relForeignKeys = new HashMap<String, String>();
-                        // vytvori atributy a unique constraints pro relacni tabulku z primarnich klicu startovni relace
+                        Set<FK> relForeignKeys = new HashSet<FK>();
+                        FK foreignKey = new FK();                        
+                        foreignKey.ref_table = start.toString();
+                        // vytvori atributy a unique constraints pro relacni tabulku z primarnich klicu startovni relace                        
                         for (String pk : PrimaryKeys.get(start.toString()))   
                         {
                             String attrName = start.toString() + "_" + pk;  // jmeno atributu
                             relAttr.add(attrName);                          // atributy
-                            relUnique.add(attrName);                        // unique constraints
-                            relForeignKeys.put(attrName, start.toString() + "(" + pk + ")"); // foreign key constraints
-                        }                           
+                            relUnique.add(attrName);                        // unique constraints                                                       
+                            foreignKey.attr.put(attrName, pk);              // cizi klic
+                        }
+                        relForeignKeys.add(foreignKey);
                         
                         // vytvori atributy a unique constraints pro relacni tabulku z primarnich klicu koncove relace                        
+                        foreignKey = new FK();
+                        foreignKey.ref_table = end.toString();
                         for (String pk: PrimaryKeys.get(end.toString()))
                         {
                             String attrName = end.toString() + "_" + pk;    // jmeno atributu
                             relAttr.add(attrName);                          // atributy
                             relUnique.add(attrName);                        // unique constraints
-                            relForeignKeys.put(attrName, start.toString() + "(" + pk + ")"); // foreign key constraints
+                            foreignKey.attr.put(attrName, pk);              // cizi klic                                                        
                         }
+                        relForeignKeys.add(foreignKey);
                         
                         // prida jednotlive struktury do globalnich map
                         Attributes.put(tableName, relAttr);
@@ -141,13 +159,16 @@ public class GenSQL implements IGen{
                     {                        
                         // prida mezi atributy N entity primarni klice 1 entity a udela zaznam o cizim klici                        
                         Set<String> endAttr = Attributes.get(end.toString());
-                        HashMap<String, String> relForeignKeys = new HashMap<String, String>();
+                        Set<FK> relForeignKeys = new HashSet<FK>();
+                        FK foreignKey = new FK();
+                        foreignKey.ref_table = start.toString();
                         for (String pk: PrimaryKeys.get(start.toString()))
                         {
                             String attrName = start.toString() + "_" + pk;
-                            endAttr.add(attrName);
-                            relForeignKeys.put(attrName, start.toString() + "(" + pk + ")");
+                            endAttr.add(attrName);                            
+                            foreignKey.attr.put(attrName, pk);    
                         }
+                        relForeignKeys.add(foreignKey);
                         
                         // udela zaznam o cizim klici                        
                         ForeignKeys.put(end.toString(), relForeignKeys);
@@ -185,7 +206,7 @@ public class GenSQL implements IGen{
         {
             output.write("CREATE TABLE " + table.toString() + " (" + Globals.nl);
             writeSQLAttributes(output, table);
-            // writeSQLConstraints(output, table);
+            writeSQLConstraints(output, table);
             output.write(");" + Globals.nl);
         }        
         
@@ -223,15 +244,20 @@ public class GenSQL implements IGen{
         output.write(Globals.nl);
         
         // cizi klice
-        HashMap fk = ForeignKeys.get(table);
-        Set st = fk.keySet();
-        for (Object hm : st)
-        {
-            output.write("CONSTRAINT FK_");
-            output.write("FOREIGN KEY (");
-            output.write("REFERENCES (");
-        }
-        
+        int count = 1;
+        for (FK fk : ForeignKeys.get(table))
+        {            
+            output.write("CONSTRAINT FK_" + table + "_" + count); // jmeno constraintu                
+            output.write(" FOREIGN KEY ("); // atributy
+            for (String foreignKey : fk.attr.keySet())
+                output.write(foreignKey + ", ");
+                        
+            output.write("REFERENCES " + fk.ref_table + "("); // reference
+            for (String foreignKey : fk.attr.keySet())
+                output.write(fk.attr.get(foreignKey));
+            
+            count++;
+        }        
     }
     
     
