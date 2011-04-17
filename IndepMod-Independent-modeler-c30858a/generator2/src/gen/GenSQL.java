@@ -8,7 +8,6 @@ import cz.cvut.indepmod.classmodel.api.model.IRelation;
 import cz.cvut.indepmod.classmodel.api.model.RelationType;
 import integration.OutputJavaClass;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,31 +26,27 @@ public class GenSQL implements IGen{
     // Struktury
     private Set<String> Tables = new HashSet<String>();
     private HashMap<String, Set<String>> Attributes = new HashMap<String, Set<String>>();
-    private HashMap<String, Set<String>> PrimaryKeys = new HashMap<String, Set<String>>();   
-    private HashMap<String, Set<String>> References = new HashMap<String, Set<String>>();
+    private HashMap<String, Set<String>> PrimaryKeys = new HashMap<String, Set<String>>();       
     private HashMap<String, HashMap<String, String>> ForeignKeys = new HashMap<String, HashMap<String, String>>();
     private HashMap<String, Set<String>> Unique = new HashMap<String, Set<String>>();
     
-
     public GenSQL(IClassModelModel model) {
-        System.out.println("predan model...");
+        System.out.println("Predan model.");
         myModel = model;
     }
 
     @Override
     public void generateModel(String save_path) throws IOException {
-        System.out.println("generovani...");
-        String filename = "generated_db_schema.sql"; // jmeno souboru do ktereho budem zapisovat
-        FileWriter fstream = new FileWriter(save_path + File.separator + filename);
-        BufferedWriter output = new BufferedWriter(fstream);
+        System.out.println("Zacatek generovani SQL.");        
 
-        for (IElement element : myModel.getClasses()) 
-        {
-            // generateSql(output, element);
-        }
-        output.close();
-    }
-
+        genTables();
+        writeSqlTables(true);
+        
+        System.out.println("Generovani SQL dokonceno.");        
+    }    
+    
+// ---------------------- METODY PRO GENEROVANI STRUKTURY ----------------------
+    
     /**
      * Vybere jmena vsech tabulek a vlozi je do seznamu.
      * Soucasne i rodicovska funkce dalsich veci jako atributy, zavislosti, atd.
@@ -169,10 +164,78 @@ public class GenSQL implements IGen{
         }
     }
     
+// --------------------------- METODY PRO VYPIS SQL ----------------------------
     
-    /**
-     * Pomocne metody
-     */
+    public void writeSqlTables(boolean drop) throws IOException
+    {
+        String filename = "generated_db_schema.sql"; // jmeno souboru do ktereho budem zapisovat
+        FileWriter fstream = new FileWriter(filename);
+        BufferedWriter output = new BufferedWriter(fstream);
+        
+        // drop
+        if (drop)
+        {
+            for (String table : Tables)        
+                output.write("DROP TABLE " + table.toString() + ";" + Globals.nl);
+        }
+        output.write(Globals.nl);
+        
+        // create
+        for (String table : Tables)
+        {
+            output.write("CREATE TABLE " + table.toString() + " (" + Globals.nl);
+            writeSQLAttributes(output, table);
+            // writeSQLConstraints(output, table);
+            output.write(");" + Globals.nl);
+        }        
+        
+        output.close();
+    }
+    
+    public void writeSQLAttributes(BufferedWriter output, String table) throws IOException
+    {
+        for (String attr : Attributes.get(table))        
+            output.write(attr + "," + Globals.nl);        
+    }
+    
+    public void writeSQLConstraints(BufferedWriter output, String table) throws IOException
+    {   
+        // primarni klice
+        output.write("CONSTRAINT PK_" + table + " "); // jmeno constraintu
+        output.write("PRIMARY KEY (");
+        for (String pk : PrimaryKeys.get(table))
+        {
+            output.write(pk + ", ");
+        }
+        output.write(")");
+                
+        output.write(Globals.nl);
+        
+        // unikatni atributy
+        output.write("CONSTRAINT UNQ_" + table + " "); // jmeno uniqu
+        output.write("UNIQUE (");
+        for (String unq : Unique.get(table))
+        {
+            output.write(unq + ", ");
+        }
+        output.write(")");
+        
+        output.write(Globals.nl);
+        
+        // cizi klice
+        HashMap fk = ForeignKeys.get(table);
+        Set st = fk.keySet();
+        for (Object hm : st)
+        {
+            output.write("CONSTRAINT FK_");
+            output.write("FOREIGN KEY (");
+            output.write("REFERENCES (");
+        }
+        
+    }
+    
+    
+// ----------------------------- POMOCNE METODY --------------------------------
     
     public boolean isPrimaryKey(String input)
     {                
