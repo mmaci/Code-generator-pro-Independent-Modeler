@@ -7,8 +7,7 @@ import cz.cvut.indepmod.classmodel.api.model.IClassModelModel;
 import cz.cvut.indepmod.classmodel.api.model.IRelation;
 import cz.cvut.indepmod.classmodel.api.model.RelationType;
 import integration.OutputJavaClass;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
@@ -20,15 +19,15 @@ import java.util.HashSet;
 public class GenSQL implements IGen{
 
     private IClassModelModel myModel;
-    private OutputJavaClass out = null;
-    private String suffix = ".java";
+    private OutputJavaClass output = null;
+    private String suffix = ".sql";
     
     // Struktury
-    private Set<String> Tables = new HashSet<String>();
-    private HashMap<String, Set<String>> Attributes = new HashMap<String, Set<String>>();
-    private HashMap<String, Set<String>> PrimaryKeys = new HashMap<String, Set<String>>();       
-    private HashMap<String, Set<FK>> ForeignKeys = new HashMap<String, Set<FK>>();
-    private HashMap<String, Set<String>> Unique = new HashMap<String, Set<String>>();
+    private Set<String> Tables;
+    private HashMap<String, Set<String>> Attributes;
+    private HashMap<String, Set<String>> PrimaryKeys;       
+    private HashMap<String, Set<FK>> ForeignKeys;
+    private HashMap<String, Set<String>> Unique;
     
     // ForeignKey structure
     /**
@@ -39,7 +38,12 @@ public class GenSQL implements IGen{
     public class FK
     {    
         public String ref_table;
-        public HashMap<String, String> attr;        
+        public HashMap<String, String> attr;   
+        public FK(String tb)
+        {
+            ref_table = tb;
+            attr = new HashMap<String, String>();
+        }
     }         
     
     public GenSQL(IClassModelModel model) {
@@ -52,8 +56,8 @@ public class GenSQL implements IGen{
         System.out.println("Zacatek generovani SQL.");        
 
         genTables();
-        writeSqlTables(true);
-        
+        writeSqlTables(save_path, true);
+                
         System.out.println("Generovani SQL dokonceno.");        
     }          
     
@@ -65,9 +69,17 @@ public class GenSQL implements IGen{
      */
     public void genTables()
     {
+        System.out.println("Zacatek generovani tabulek.");
+        
+        Tables = new HashSet<String>();
+        Attributes = new HashMap<String, Set<String>>();
+        PrimaryKeys = new HashMap<String, Set<String>>();       
+        ForeignKeys = new HashMap<String, Set<FK>>();
+        Unique = new HashMap<String, Set<String>>();
+        
         for (IElement element : myModel.getClasses())
         {
-            Tables.add(element.toString());
+            Tables.add(element.toString()); System.out.println("Tabulka "+ element.toString() + ": ");
             genAttributes(element);        
             genRelations(element);         
         }
@@ -81,11 +93,11 @@ public class GenSQL implements IGen{
         Set<String> attrSet = new HashSet<String>();   // seznam atributu
         Set<String> pkSet = new HashSet<String>();     // seznam primarnich klicu
         for (IAttribute iAttribute : element.getAttributeModels())   // projde vsechny atributy kazde tridy
-        {            
-            attrSet.add(iAttribute.toString());            
-            if (isPrimaryKey(iAttribute.toString()))
+        {                      
+            attrSet.add(iAttribute.getName()); System.out.println("Atribut " + iAttribute.getName());
+            if (isPrimaryKey(iAttribute.getName()))
             {
-                pkSet.add(iAttribute.toString());
+                pkSet.add(iAttribute.getName());
             }
         }
         // vytvori seznamy atributu a primarni klicu vazane na jmena dane tabulky
@@ -119,34 +131,43 @@ public class GenSQL implements IGen{
                     {
                         String tableName = start.toString() + "_" + end.toString(); // jmeno relacni tabulky
                         
-                        Tables.add(tableName); // prida mezi tabulky
+                        Tables.add(tableName); System.out.println("Tabulka " + tableName); // prida mezi tabulky
                                                 
                         Set<String> relAttr = new HashSet<String>();
                         Set<String> relUnique = new HashSet<String>();
-                        Set<FK> relForeignKeys = new HashSet<FK>();
-                        FK foreignKey = new FK();                        
-                        foreignKey.ref_table = start.toString();
-                        // vytvori atributy a unique constraints pro relacni tabulku z primarnich klicu startovni relace                        
-                        for (String pk : PrimaryKeys.get(start.toString()))   
-                        {
-                            String attrName = start.toString() + "_" + pk;  // jmeno atributu
-                            relAttr.add(attrName);                          // atributy
-                            relUnique.add(attrName);                        // unique constraints                                                       
-                            foreignKey.attr.put(attrName, pk);              // cizi klic
-                        }
-                        relForeignKeys.add(foreignKey);
+                        Set<FK> relForeignKeys = new HashSet<FK>();                        
+                            
+                            // vytvori atributy a unique constraints pro relacni tabulku z primarnich klicu startovni relace                                              
+                            FK foreignKey = new FK(start.toString());  
+                            Set<String> pks = PrimaryKeys.get(start.toString());
+                            if (pks != null)
+                            {
+                                for (String pk : pks)   
+                                {
+                                    String attrName = start.toString() + "_" + pk;  // jmeno atributu
+                                    relAttr.add(attrName); System.out.println("Atribut " + attrName);                         // atributy
+                                    relUnique.add(attrName); System.out.println("Unique " + attrName);                        // unique constraints                                                       
+                                    foreignKey.attr.put(attrName, pk); System.out.println("Cizi klic " + attrName + " - " + pk);              // cizi klic
+                                }                        
+                                relForeignKeys.add(foreignKey);
+                            }
                         
-                        // vytvori atributy a unique constraints pro relacni tabulku z primarnich klicu koncove relace                        
-                        foreignKey = new FK();
-                        foreignKey.ref_table = end.toString();
-                        for (String pk: PrimaryKeys.get(end.toString()))
-                        {
-                            String attrName = end.toString() + "_" + pk;    // jmeno atributu
-                            relAttr.add(attrName);                          // atributy
-                            relUnique.add(attrName);                        // unique constraints
-                            foreignKey.attr.put(attrName, pk);              // cizi klic                                                        
-                        }
-                        relForeignKeys.add(foreignKey);
+                        
+                            // vytvori atributy a unique constraints pro relacni tabulku z primarnich klicu koncove relace                                               
+                            foreignKey = new FK(end.toString());
+                            pks = PrimaryKeys.get(end.toString());
+                            if (pks != null)
+                            {
+                                for (String pk: pks)
+                                {
+                                    String attrName = end.toString() + "_" + pk;    // jmeno atributu
+                                    relAttr.add(attrName); System.out.println("Atribut " + attrName);                         // atributy
+                                    relUnique.add(attrName); System.out.println("Unique " + attrName);                       // unique constraints
+                                    foreignKey.attr.put(attrName, pk); System.out.println("Cizi klic " + attrName + " - " + pk);             // cizi klic                                                        
+                                }                        
+                                relForeignKeys.add(foreignKey);
+                            }
+                        
                         
                         // prida jednotlive struktury do globalnich map
                         Attributes.put(tableName, relAttr);
@@ -160,8 +181,7 @@ public class GenSQL implements IGen{
                         // prida mezi atributy N entity primarni klice 1 entity a udela zaznam o cizim klici                        
                         Set<String> endAttr = Attributes.get(end.toString());
                         Set<FK> relForeignKeys = new HashSet<FK>();
-                        FK foreignKey = new FK();
-                        foreignKey.ref_table = start.toString();
+                        FK foreignKey = new FK(start.toString());                        
                         for (String pk: PrimaryKeys.get(start.toString()))
                         {
                             String attrName = start.toString() + "_" + pk;
@@ -187,11 +207,11 @@ public class GenSQL implements IGen{
     
 // --------------------------- METODY PRO VYPIS SQL ----------------------------
     
-    public void writeSqlTables(boolean drop) throws IOException
+    public void writeSqlTables(String save_path, boolean drop) throws IOException
     {
-        String filename = "generated_db_schema.sql"; // jmeno souboru do ktereho budem zapisovat
-        FileWriter fstream = new FileWriter(filename);
-        BufferedWriter output = new BufferedWriter(fstream);
+        if (save_path == null)
+            save_path = ".";
+        output = new OutputJavaClass(save_path + File.separator + "pokus" + suffix);                
         
         // drop
         if (drop)
@@ -205,28 +225,32 @@ public class GenSQL implements IGen{
         for (String table : Tables)
         {
             output.write("CREATE TABLE " + table.toString() + " (" + Globals.nl);
-            writeSQLAttributes(output, table);
-            writeSQLConstraints(output, table);
+            writeSQLAttributes(table);
+            writeSQLConstraints(table);
             output.write(");" + Globals.nl);
         }        
         
         output.close();
     }
     
-    public void writeSQLAttributes(BufferedWriter output, String table) throws IOException
+    public void writeSQLAttributes(String table) throws IOException
     {
         for (String attr : Attributes.get(table))        
             output.write(attr + "," + Globals.nl);        
     }
     
-    public void writeSQLConstraints(BufferedWriter output, String table) throws IOException
+    public void writeSQLConstraints(String table) throws IOException
     {   
         // primarni klice
         output.write("CONSTRAINT PK_" + table + " "); // jmeno constraintu
         output.write("PRIMARY KEY (");
-        for (String pk : PrimaryKeys.get(table))
+        Set<String> pks = PrimaryKeys.get(table);
+        if (pks != null)
         {
-            output.write(pk + ", ");
+            for (String pk : pks)
+            {
+                output.write(pk + ", ");
+            }
         }
         output.write(")");
                 
@@ -235,9 +259,13 @@ public class GenSQL implements IGen{
         // unikatni atributy
         output.write("CONSTRAINT UNQ_" + table + " "); // jmeno uniqu
         output.write("UNIQUE (");
-        for (String unq : Unique.get(table))
+        Set<String> unqs = Unique.get(table);
+        if (unqs != null)
         {
-            output.write(unq + ", ");
+            for (String unq : Unique.get(table))
+            {
+                output.write(unq + ", ");
+            }
         }
         output.write(")");
         
@@ -245,19 +273,23 @@ public class GenSQL implements IGen{
         
         // cizi klice
         int count = 1;
-        for (FK fk : ForeignKeys.get(table))
-        {            
-            output.write("CONSTRAINT FK_" + table + "_" + count); // jmeno constraintu                
-            output.write(" FOREIGN KEY ("); // atributy
-            for (String foreignKey : fk.attr.keySet())
-                output.write(foreignKey + ", ");
-                        
-            output.write("REFERENCES " + fk.ref_table + "("); // reference
-            for (String foreignKey : fk.attr.keySet())
-                output.write(fk.attr.get(foreignKey));
-            
-            count++;
-        }        
+        Set<FK> fks = ForeignKeys.get(table);
+        if (fks != null)
+        {
+            for (FK fk : fks)
+            {            
+                output.write("CONSTRAINT FK_" + table + "_" + count); // jmeno constraintu                
+                output.write(" FOREIGN KEY ("); // atributy
+                for (String foreignKey : fk.attr.keySet())
+                    output.write(foreignKey + ", ");
+
+                output.write("REFERENCES " + fk.ref_table + "("); // reference
+                for (String foreignKey : fk.attr.keySet())
+                    output.write(fk.attr.get(foreignKey));
+
+                count++;
+            } 
+        }
     }
     
     
