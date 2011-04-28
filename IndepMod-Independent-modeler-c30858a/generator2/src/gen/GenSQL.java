@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gen;
 
 import cz.cvut.indepmod.classmodel.api.model.IAttribute;
@@ -11,29 +6,19 @@ import cz.cvut.indepmod.classmodel.api.model.IElement;
 import cz.cvut.indepmod.classmodel.api.model.IClassModelModel;
 import cz.cvut.indepmod.classmodel.api.model.IRelation;
 import cz.cvut.indepmod.classmodel.api.model.RelationType;
-<<<<<<< HEAD
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-=======
 import integration.OutputJavaClass;
 import java.io.*;
->>>>>>> origin/master
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
- *
- * @author radek
+ * @Author Pavel Macenauer
  */
 public class GenSQL implements IGen{
 
     private IClassModelModel myModel;
-<<<<<<< HEAD
-
-=======
     private OutputJavaClass output = null;
     private String suffix = ".sql";
     
@@ -61,23 +46,15 @@ public class GenSQL implements IGen{
         }
     }         
     
->>>>>>> origin/master
     public GenSQL(IClassModelModel model) {
-        System.out.println("predan model...");
+        System.out.println("Predan model.");
         myModel = model;
     }
 
     @Override
     public void generateModel(String save_path) throws IOException {
-        System.out.println("generovani...");
-        String filename = "generated_db_schema.sql"; // jmeno souboru do ktereho budem zapisovat
-        FileWriter fstream = new FileWriter(save_path + File.separator + filename);
-        BufferedWriter output = new BufferedWriter(fstream);
+        System.out.println("Zacatek generovani SQL.");        
 
-<<<<<<< HEAD
-        for (IElement iClass : myModel.getClasses()) {
-            generateSql(output, iClass);
-=======
         genTables();
         writeSqlTables(save_path, true);
                 
@@ -105,27 +82,12 @@ public class GenSQL implements IGen{
             Tables.add(element.toString()); System.out.println("Tabulka "+ element.toString() + ": ");
             genAttributes(element);        
             genRelations(element);         
->>>>>>> origin/master
         }
-        output.close();
     }
-
-
+    
     /**
-     * Otevreni souboru pro zapis a zacatek generovani sql
-     *
-     * @param filename
-     * @param c
-     * @throws IOException
+     * Vybere jmena vsech atributu dane tridy a prida je do seznamu vazaneho na danou tridu     
      */
-<<<<<<< HEAD
-    private void generateSql(BufferedWriter output, IElement c) throws IOException {
-        try {        
-            writeSqlTable(output, c);
-            writeSqlRelations(output, c);
-        } catch (IOException e) {
-            throw e; // pripadnou psani preda dal
-=======
     public void genAttributes(IElement element)
     {
         Set<String> attrSet = new HashSet<String>();   // seznam atributu
@@ -137,18 +99,15 @@ public class GenSQL implements IGen{
             {
                 pkSet.add(iAttribute.getName());
             }
->>>>>>> origin/master
         }
+        // vytvori seznamy atributu a primarni klicu vazane na jmena dane tabulky
+        Attributes.put(element.toString(), attrSet);
+        PrimaryKeys.put(element.toString(), pkSet);
     }
     
     /**
-     * pokud se jedna o primarni klic, vrati true, jinak false
-     * 
-     * @param input
-     * @return 
+     * Vygeneruje constrainty, tabulky, atributy podle typu jednotlivych relaci     
      */
-<<<<<<< HEAD
-=======
     public void genRelations(IElement element)
     {
         for (IRelation relation : element.getRelatedClass()) 
@@ -222,14 +181,18 @@ public class GenSQL implements IGen{
                         // prida mezi atributy N entity primarni klice 1 entity a udela zaznam o cizim klici                        
                         Set<String> endAttr = Attributes.get(end.toString());
                         Set<FK> relForeignKeys = new HashSet<FK>();
-                        FK foreignKey = new FK(start.toString());                        
-                        for (String pk: PrimaryKeys.get(start.toString()))
+                        FK foreignKey = new FK(start.toString());  
+                        Set<String> pks = PrimaryKeys.get(start.toString());
+                        if (pks != null)
                         {
-                            String attrName = start.toString() + "_" + pk;
-                            endAttr.add(attrName);                            
-                            foreignKey.attr.put(attrName, pk);    
+                            for (String pk: PrimaryKeys.get(start.toString()))
+                            {
+                                String attrName = start.toString() + "_" + pk;
+                                endAttr.add(attrName);  System.out.println("Atribut " + attrName);                         
+                                foreignKey.attr.put(attrName, pk); System.out.println("Cizi klic " + attrName + " - " + pk);  
+                            }
+                            relForeignKeys.add(foreignKey);
                         }
-                        relForeignKeys.add(foreignKey);
                         
                         // udela zaznam o cizim klici                        
                         ForeignKeys.put(end.toString(), relForeignKeys);
@@ -336,7 +299,6 @@ public class GenSQL implements IGen{
     
 // ----------------------------- POMOCNE METODY --------------------------------
     
->>>>>>> origin/master
     public boolean isPrimaryKey(String input)
     {                
         if (input.startsWith("pk_"))
@@ -344,47 +306,35 @@ public class GenSQL implements IGen{
         return false;           
     }
     
-    /**
-     * Vytahne z tridy primarni klice, ktere jsou identifikovany prefixem pk_
-     * 
-     * @param c 
-     */
-    public List<IAttribute> getPrimaryKeys(IElement c)
-    {
-        List<IAttribute> PrimaryKeys = new LinkedList<IAttribute>();
-        for (IAttribute attribute : c.getAttributeModels()) {
-            if (this.isPrimaryKey(attribute.getName()))
-                PrimaryKeys.add(attribute);
+    private Cardinality filterCardinality(ICardinality cardin) {
+        Cardinality result = Cardinality.ERROR;
+
+        if (cardin.getFrom() == 1 && cardin.getTo() == -1) {
+            result = Cardinality.ONE_N;
+        } else if (cardin.getFrom() == 1 && cardin.getTo() == 1) {
+            result = Cardinality.ONE_ONE;
+        } else if (cardin.getFrom() == 0 && cardin.getTo() == -1) {
+            result = Cardinality.ZERO_N;
         }
-        return PrimaryKeys;
+
+        return result;
     }
     
-    /**
-     * VYpise jmena primarnich klicu ve tvaru jmeno1, jmeno2, jmeno3, ...
-     * 
-     * @param output
-     * @param c
-     * @throws IOException 
-     */
-    public void writePrimaryKeys(BufferedWriter output, IElement c) throws IOException
-    {
-        List<IAttribute> PrimaryKeys = getPrimaryKeys(c);
-        for (Iterator<IAttribute> it = PrimaryKeys.iterator(); it.hasNext();) 
-        {
-            IAttribute iAttribute = it.next();
-            output.write(iAttribute.getName());
-            if (it.hasNext())
-                output.write(", ");                                
+/******************************************************************************/
+    
+   /*
+    private void generateSql(BufferedWriter output, IElement c) throws IOException {
+        try {        
+            writeSqlTable(output, c);
+            writeSqlRelations(output, c);
+        } catch (IOException e) {
+            throw e; // pripadnou psani preda dal
         }
     }
-
-    /**
-     * Vypis jednotlivych tabulek
-     *
-     * @param output
-     * @param c
-     * @throws IOException
-     */
+    
+ 
+    
+  
     private void writeSqlTable(BufferedWriter output, IElement c) throws IOException {
         output.write(Globals.nl);
         // ---
@@ -401,13 +351,7 @@ public class GenSQL implements IGen{
         output.write(Globals.nl);
     }
 
-    /**
-     * Vypis jednotlivych atributu pro jednotlive tabulky
-     *
-     * @param output
-     * @param c
-     * @throws IOException
-     */
+
     private void writeSqlAttributes(BufferedWriter output, IElement c) throws IOException {
         for (IAttribute attribute : c.getAttributeModels()) {
             output.write(attribute.getName() + " " + attribute.getType().toString() + ",");
@@ -418,27 +362,9 @@ public class GenSQL implements IGen{
         output.write(")");
     }
 
-    private Cardinality filterCardinality(ICardinality cardin) {
-        Cardinality result = Cardinality.ERROR;
 
-        if (cardin.getFrom() == 1 && cardin.getTo() == -1) {
-            result = Cardinality.ONE_N;
-        } else if (cardin.getFrom() == 1 && cardin.getTo() == 1) {
-            result = Cardinality.ONE_ONE;
-        } else if (cardin.getFrom() == 0 && cardin.getTo() == -1) {
-            result = Cardinality.ZERO_N;
-        }
 
-        return result;
-    }
 
-     /**
-     * Vypis sql pro jednotlive relace
-     *
-     * @param output
-     * @param c
-     * @throws IOException
-     */
     private void writeSqlRelations(BufferedWriter output, IElement c) throws IOException {
         for (IRelation rel : c.getRelatedClass()) {
             // zkraceni jednotlivych nazvu pro prehlednost
@@ -448,13 +374,7 @@ public class GenSQL implements IGen{
             Cardinality start_rel = filterCardinality(rel.getStartCardinality());
             Cardinality end_rel = filterCardinality(rel.getEndCardinality());            
 
-            /**
-             * Primarni klic je treba predelat na seznam, neb kazda tabulka
-             * muze byt identifikovana vice primarnimi klici.
-             *
-             * Hacek je v tom, ze momentalne nema IM implementovat system, jak
-             * rozlisovat primarni klice
-             */
+   
             // IAttribute pk_1;
             // IAttribute pk_2;
             output.write(Globals.nl);
@@ -502,6 +422,6 @@ public class GenSQL implements IGen{
             output.write(Globals.nl);
 
         }
-    }        
+    }        */
             
 }
