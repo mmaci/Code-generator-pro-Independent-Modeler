@@ -222,18 +222,14 @@ public class GenSQL implements IGen{
                         // prida mezi atributy N entity primarni klice 1 entity a udela zaznam o cizim klici                        
                         Set<String> endAttr = Attributes.get(end.toString());
                         Set<FK> relForeignKeys = new HashSet<FK>();
-                        FK foreignKey = new FK(start.toString());  
-                        Set<String> pks = PrimaryKeys.get(start.toString());
-                        if (pks != null)
+                        FK foreignKey = new FK(start.toString());                        
+                        for (String pk: PrimaryKeys.get(start.toString()))
                         {
-                            for (String pk: PrimaryKeys.get(start.toString()))
-                            {
-                                String attrName = start.toString() + "_" + pk;
-                                endAttr.add(attrName);  System.out.println("Atribut " + attrName);                         
-                                foreignKey.attr.put(attrName, pk); System.out.println("Cizi klic " + attrName + " - " + pk);  
-                            }
-                            relForeignKeys.add(foreignKey);
+                            String attrName = start.toString() + "_" + pk;
+                            endAttr.add(attrName);                            
+                            foreignKey.attr.put(attrName, pk);    
                         }
+                        relForeignKeys.add(foreignKey);
                         
                         // udela zaznam o cizim klici                        
                         ForeignKeys.put(end.toString(), relForeignKeys);
