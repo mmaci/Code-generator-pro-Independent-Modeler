@@ -91,7 +91,7 @@ public class GenJavaClass implements IGen{
                     numberOfAggreg++;
                     out.write(Globals.pri);
                     if (relation.getStartCardinality().getTo() == -1) {
-                        out.write("Collection");
+                        out.write("List" + "<"+relation.getEndingClass().getTypeName()+">");
                     } else {
                         out.write(relation.getEndingClass().getTypeName());
                     }
@@ -139,7 +139,7 @@ public class GenJavaClass implements IGen{
                     numberOfRelEndClass++;
                     out.write(Globals.pri);
                     if (relation.getEndCardinality().getTo() == -1) {
-                        out.write("Collection");
+                        out.write("List" + "<"+relation.getEndingClass().getTypeName()+">");
                     } else {
                         out.write(relation.getEndingClass().getTypeName());
                     }
@@ -151,7 +151,7 @@ public class GenJavaClass implements IGen{
                     numberOfRelStartClass++;
                     out.write(Globals.pri);
                     if (relation.getStartCardinality().getTo() == -1) {
-                        out.write("Collection");
+                        out.write("List" + "<"+relation.getEndingClass().getTypeName()+">");
                     } else {
                         out.write(relation.getStartingClass().getTypeName());
                     }
