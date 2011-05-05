@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="cz.cvut.indepmod.classmodel.api">
+    <module_version install_time="1301339950727" last="true" origin="installer" specification_version="1.0">
+        <file crc="2854460738" name="config/Modules/cz-cvut-indepmod-classmodel-api.xml"/>
+        <file crc="1029650343" name="modules/cz-cvut-indepmod-classmodel-api.jar"/>
+    </module_version>
+</module>

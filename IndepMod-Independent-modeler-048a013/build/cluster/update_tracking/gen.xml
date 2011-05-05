@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="gen">
+    <module_version install_time="1301339954801" last="true" origin="installer" specification_version="1.0">
+        <file crc="1627852395" name="config/Modules/gen.xml"/>
+        <file crc="3175126363" name="modules/gen.jar"/>
+    </module_version>
+</module>

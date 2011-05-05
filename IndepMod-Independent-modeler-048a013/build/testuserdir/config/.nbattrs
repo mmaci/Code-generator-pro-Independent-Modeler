@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
+<attributes version="1.0">
+    <fileobject name="">
+        <attr name="Menu\Tools\JavaPlatformsCustomizerAction.instance\position" intvalue="500"/>
+        <attr name="Menu\Tools\LibrariesCustomizerAction.instance\position" intvalue="800"/>
+        <attr name="Menu\Tools\PaletteManager\position" intvalue="1100"/>
+        <attr name="Menu\Tools\Separator1.instance\position" intvalue="400"/>
+        <attr name="Menu\Tools\Separator2.instance\position" intvalue="1200"/>
+        <attr name="Menu\Tools\Separator3.instance\position" intvalue="1400"/>
+        <attr name="Menu\Tools\VariablesCustomizerAction.instance\position" intvalue="700"/>
+        <attr name="Menu\Tools\org-netbeans-modules-apisupport-project-ui-platform-NbPlatformCustomizerAction.instance\position" intvalue="600"/>
+        <attr name="Menu\Tools\org-netbeans-modules-autoupdate-ui-actions-PluginManagerAction.shadow\position" intvalue="1300"/>
+        <attr name="Menu\Tools\org-netbeans-modules-favorites-templates-TemplatesAction.instance\position" intvalue="900"/>
+        <attr name="Menu\Tools\org-netbeans-modules-options-OptionsWindowAction.shadow\position" intvalue="1500"/>
+        <attr name="Menu\Tools\org-netbeans-modules-xml-catalog-CatalogAction.instance\position" intvalue="1000"/>
+        <attr name="Menu\Tools\org-openide-actions-ToolsAction.instance\position" intvalue="300"/>
+    </fileobject>
+</attributes>

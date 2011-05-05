@@ -1,0 +1,25 @@
+#Wed Mar 16 14:35:24 CET 2011
+s5=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/ext/vecmath.jar\!/
+s4=file\:/home/radek/NetBeansProjects/JavaApplication1/test/
+s3=jar\:file\:/home/radek/netbeans-6.9.1/java/modules/ext/junit-3.8.2.jar\!/
+s2=file\:/home/radek/NetBeansProjects/JavaApplication1/src/
+s19=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/charsets.jar\!/
+s1=jar\:file\:/home/radek/netbeans-6.9.1/ide/jsstubs/allstubs.zip\!/
+s18=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/ext/localedata.jar\!/
+s17=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/resources.jar\!/
+s16=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/sunrsasign.jar\!/
+s15=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/ext/j3dcore.jar\!/
+s14=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/jsse.jar\!/
+s13=file\:/usr/local/jdk1.6.0_14/jre/classes/
+s12=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/jce.jar\!/
+s11=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/rt.jar\!/
+s10=jar\:file\:/home/radek/netbeans-6.9.1/platform/modules/ext/junit-4.5.jar\!/
+s24=file\:/home/radek/NetBeansProjects/IndepMod-Independent-modeler-048a013222/IndepMod-Independent-modeler-048a013/generator2/src/
+s23=file\:/home/radek/NetBeansProjects/JavaApplication3/test/
+s22=file\:/home/radek/NetBeansProjects/JavaApplication3/src/
+s21=file\:/home/radek/NetBeansProjects/JavaApplication2/test/
+s20=file\:/home/radek/NetBeansProjects/JavaApplication2/src/
+s9=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/ext/dnsns.jar\!/
+s8=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/ext/j3dutils.jar\!/
+s7=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/ext/sunjce_provider.jar\!/
+s6=jar\:file\:/usr/local/jdk1.6.0_14/jre/lib/ext/sunpkcs11.jar\!/

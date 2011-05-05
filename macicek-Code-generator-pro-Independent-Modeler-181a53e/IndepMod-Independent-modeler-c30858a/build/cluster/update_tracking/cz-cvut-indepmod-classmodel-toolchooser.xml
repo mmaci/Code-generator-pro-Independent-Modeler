@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="cz.cvut.indepmod.classmodel.toolchooser">
+    <module_version install_time="1303792169015" last="true" origin="installer" specification_version="1.0">
+        <file crc="1848692445" name="config/Modules/cz-cvut-indepmod-classmodel-toolchooser.xml"/>
+        <file crc="901162285" name="modules/cz-cvut-indepmod-classmodel-toolchooser.jar"/>
+    </module_version>
+</module>

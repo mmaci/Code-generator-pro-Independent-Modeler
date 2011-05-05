@@ -1,0 +1,139 @@
+<?xml version="1.0" ?>
+<rss version="2.0">
+   <channel>
+      
+      <title>NetBeans Screencasts and Video Demos</title>
+      <link>http://netbeans.org/index.html</link>
+      <description>Screencasts that show you all the cool features of NetBeans, the free and open-source IDE for Java development and scripting.</description>
+      <language>en</language>
+      <webMaster>webmaster@netbeans.org (NetBeans webmaster)</webMaster>
+      <image>
+         <title>NetBeans Screencasts and Video Demos</title>
+         <url>http://netbeans.org/images_www/v5/nb-logo.gif</url>
+         <link>http://netbeans.org/index.html</link>
+         <width>110</width>
+         <height>30</height>
+      </image>
+
+
+<item>
+         <pubDate>Monday, 21 March 2011 12:00:00 +0200</pubDate>
+         <title>Deploying a Web App to Oracle WebLogic Server</title>
+         <link>http://netbeans.org/kb/docs/javaee/weblogic-javaee-m1-screencast.html</link>
+         <guid>http://netbeans.org/kb/docs/javaee/weblogic-javaee-m1-screencast.html</guid>
+         <description>This screencast shows support for the Oracle WebLogic server in NetBeans IDE. See how to register an instance of the server with the IDE and then deploy a Java EE 5 web application..</description>
+         <enclosure url="http://netbeans.org/images_www/demos/weblogic-demo-610m1.png" type="image/png" length="35253" />
+      </item>
+
+
+<item>
+         <pubDate>Thursday, 17 Febuary 2011 12:00:00 +0200</pubDate>
+         <title>Generating PHP Documentation With NetBeans IDE</title>
+         <link>http://netbeans.org/kb/docs/php/screencast-phpdoc.html</link>
+         <guid>http://netbeans.org/kb/docs/php/screencast-phpdoc.html</guid>
+         <description>This screencast shows how to use PHPDocumentor with NetBeans IDE.</description>
+         <enclosure url="http://netbeans.org/images_www/demos/php-demo.gif" type="image/png" length="35253" />
+      </item>
+
+<item>
+         <pubDate>Thursday, 31 January 2011 12:00:00 +0200</pubDate>
+         <title>Rename Refactoring and Other Editor Improvements in NetBeans IDE 7.0 for PHP</title>
+         <link>http://netbeans.org/kb/docs/php/screencast-rename-refactoring.html</link>
+         <guid>http://netbeans.org/kb/docs/php/screencast-rename-refactoring.html</guid>
+         <description>This screencast shows the new features of the PHP editor in NetBeans IDE 7.0</description>
+         <enclosure url="http://netbeans.org/images_www/demos/php-demo.gif" type="image/png" length="35253" />
+      </item>
+
+      <item>
+         <pubDate>Mon, 03 January 2011 12:00:00 +0200</pubDate>
+         <title>Zend Framework Support in the NetBeans IDE</title>
+         <link>http://netbeans.org/kb/docs/php/zend-framework-screencast.html</link>
+         <guid>http://netbeans.org/kb/docs/php/zend-framework-screencast.html</guid>
+         <description>This screencast demonstrates how to develop PHP applications using Zend Framework in the NetBeans IDE.</description>
+         <enclosure url="http://netbeans.org/images_www/demos/php-demo.gif" type="image/png" length="35253" />
+      </item>
+      
+<item>
+         <pubDate>Tues, 07 December 2010 12:00:00 +0200</pubDate>
+         <title>Designing a Swing GUI in NetBeans IDE</title>
+         <link>http://netbeans.org/kb/docs/java/gui-builder-screencast.html</link>
+         <guid>http://netbeans.org/kb/docs/java/gui-builder-screencast.html</guid>
+         <description>This screencast walks you through designing a Swing GUI in the NetBeans IDE.</description>
+         <enclosure url="http://netbeans.org/images_www/gui-builder-small.png" type="image/png" length="35253" />
+      </item>
+
+<item>
+         <pubDate>Thurs, 18 November 2010 12:00:00 +0200</pubDate>
+         <title>Rename Refactoring and Other Editor Improvements in NetBeans IDE 7.0 for PHP</title>
+         <link>http://netbeans.org/kb/docs/php/screencast-rename-refactoring.html</link>
+         <guid>http://netbeans.org/kb/docs/php/screencast-rename-refactoring.html</guid>
+         <description>This screencast shows the new features of the PHP editor in NetBeans IDE 7.0</description>
+         <enclosure url="http://netbeans.org/images_www/demos/php-demo.gif" type="image/png" length="35253" />
+      </item>
+
+<item>
+         <pubDate>Mon, 08 November 2010 12:00:00 +0200</pubDate>
+         <title>Using New Data Sources in JavaFX Composer</title>
+         <link>http://netbeans.org/kb/docs/javafx/newdatasource-screencast.html</link>
+         <guid>http://netbeans.org/kb/docs/javafx/newdatasource-screencast.html</guid>
+         <description>This demo shows how to create a form that displays data from an XML file in JavaFX Composer.</description>
+         <enclosure url="http://netbeans.org/images_www/demos/javafx-composer.png" type="image/png" length="35253" />
+      </item>
+
+<item>
+         <pubDate>Mon, 25 October 2010 12:00:00 +0200</pubDate>
+         <title>PHP Support in the NetBeans IDE</title>
+         <link>http://netbeans.org/kb/docs/php/php-intro-screencast.html</link>
+         <guid>http://netbeans.org/kb/docs/php/php-intro-screencast.html</guid>
+         <description>A high-level overview of the NetBeans IDE's support for dynamic languages, such as PHP.</description>
+         <enclosure url="http://netbeans.org/images_www/demos/php-demo.gif" type="image/png" length="35253" />
+      </item>
+
+<item>
+         <pubDate>Mon, 04 October 2010 12:00:00 +0200</pubDate>
+         <title>Creating an Animated NetBeans Logo Application in JavaFX Composer</title>
+         <link>http://netbeans.org/kb/docs/javafx/nblogo-screencast.html</link>
+         <guid>http://netbeans.org/kb/docs/javafx/nblogo-screencast.html</guid>
+         <description>Quickly create a small demo with animated graphics using the NetBeans JavaFX Composer.</description>
+         <enclosure url="http://netbeans.org/images_www/demos/javafx-composer.png" type="image/png" length="35253" />
+      </item>
+
+<item>
+         <pubDate>Mon, 20 September 2010 12:00:00 +0200</pubDate>
+         <title>Editing Java Code in NetBeans IDE</title>
+         <link>http://netbeans.org/kb/docs/java/java-editor-screencast.html</link>
+         <guid>http://netbeans.org/kb/docs/java/java-editor-screencast.html</guid>
+         <description>This demonstration walks you through the creation of a simple Java application in the Java Editor of NetBeans IDE 6.9.1</description>
+         <enclosure url="http://netbeans.org/images_www/demos/java-editor.jpg" type="image/jpg" length="35253" />
+      </item>
+
+<item>
+         <pubDate>Tue, 07 September 2010 12:00:00 +0200</pubDate>
+         <title>Deploying a Web Application to the Oracle WebLogic Server</title>
+         <link>http://netbeans.org/kb/docs/javaee/weblogic-javaee-m1-screencast.html</link>
+         <guid>http://netbeans.org/kb/docs/javaee/weblogic-javaee-m1-screencast.html</guid>
+         <description>This screencast shows support for the Oracle WebLogic server in NetBeans IDE 6.10 Milestone 1. See how to register an instance of the server with the IDE and then deploy a Java EE 5 web application.</description>
+         <enclosure url="http://netbeans.org/images_www/demos/weblogic-demo-610m1.png" type="image/png" length="35253" />
+      </item>
+
+<item>
+         <pubDate>Wed, 28 July 2010 12:00:00 +0200</pubDate>
+         <title>Using JavaFX Composer in NetBeans IDE 6.9</title>
+         <link>http://netbeans.org/kb/docs/javafx/composer-screencast.html</link>
+         <guid>http://netbeans.org/kb/docs/javafx/composer-screencast.html</guid>
+         <description>The JavaFX Composer is a visual layout tool for building JavaFX GUI applications, similar to the Swing GUI Builder for Java SE applications.</description>
+         <enclosure url="http://netbeans.org/images_www/demos/javafx-composer.png" type="image/png" length="35253" />
+      </item>
+
+      <item>
+         <pubDate>Wed, 16 June 2010 12:00:00 +0200</pubDate>
+         <title>NetBeans Platform 6.9</title>
+         <link>http://netbeans.org/kb/docs/ide/platform-screencast.html</link>
+         <guid>http://netbeans.org/kb/docs/ide/platform-screencast.html</guid>
+         <description>An overview of the NetBeans Platform, a Swing-based framework for developing desktop applications.</description>
+         <enclosure url="http://netbeans.org/images_www/demos/platform.png" type="image/png" length="35253" />
+      </item>
+   </channel>
+</rss>
+
+

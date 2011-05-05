@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+    <module name="cz.cvut.indepmod.classmodel.toolchooser" spec="1.0"/>
+    <instanceof class="cz.cvut.indepmod.classmodel.toolchooser.ToolChooser"/>
+    <instanceof class="cz.cvut.indepmod.classmodel.toolchooser.ToolChooserView"/>
+    <instanceof class="java.awt.Component"/>
+    <instanceof class="java.awt.Container"/>
+    <instanceof class="java.awt.MenuContainer"/>
+    <instanceof class="java.awt.image.ImageObserver"/>
+    <instanceof class="java.io.Externalizable"/>
+    <instanceof class="java.io.Serializable"/>
+    <instanceof class="java.lang.Object"/>
+    <instanceof class="javax.accessibility.Accessible"/>
+    <instanceof class="javax.swing.JComponent"/>
+    <instanceof class="javax.swing.TransferHandler$HasGetTransferHandler"/>
+    <instanceof class="org.openide.util.HelpCtx$Provider"/>
+    <instanceof class="org.openide.util.Lookup$Provider"/>
+    <instanceof class="org.openide.windows.TopComponent"/>
+    <serialdata class="cz.cvut.indepmod.classmodel.toolchooser.ToolChooser">
+        ACED0005737200296F72672E6F70656E6964652E77696E646F77732E546F70436F6D706F6E656E74245265706C6163657284
+        874494BDDF6D640300007870740033637A2E637675742E696E6465706D6F642E636C6173736D6F64656C2E746F6F6C63686F
+        6F7365722E546F6F6C43686F6F7365727372000F6A6176612E6C616E672E53686F7274684D37133460DA5202000153000576
+        616C7565787200106A6176612E6C616E672E4E756D62657286AC951D0B94E08B02000078700001770400000001707074000C
+        546F6F6C2043686F6F7365727078
+    </serialdata>
+</settings>
