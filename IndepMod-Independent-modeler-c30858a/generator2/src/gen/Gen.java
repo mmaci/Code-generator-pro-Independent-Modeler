@@ -1,5 +1,6 @@
 package gen;
 
+import gen.genEnums.Cardinality;
 import cz.cvut.indepmod.classmodel.api.model.IAnotation;
 import cz.cvut.indepmod.classmodel.api.model.IAnotationValue;
 import cz.cvut.indepmod.classmodel.api.model.IAttribute;
